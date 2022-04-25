@@ -14,10 +14,10 @@ export const ConnectWallet = () => {
     useWalletContext();
 
   return (
-    <div>
+    <div className="max-w-screen-lg mx-auto">
       <div
         className={classNames(
-          "border-2 rounded-lg p-2 max-w-screen-lg mx-auto",
+          "border-2 rounded-lg p-2",
           account ? "border-green-500" : "border-gray-400"
         )}
       >
