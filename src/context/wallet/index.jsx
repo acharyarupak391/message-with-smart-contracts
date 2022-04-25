@@ -2,7 +2,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { providerOptions } from "../../utils/providerOptions";
-import { toHex } from "../../utils/utils";
+import { getAddressNumber, toHex } from "../../utils/utils";
 import { networkParams } from "../../utils/networks";
 
 const initialValue = {
@@ -51,7 +51,10 @@ export const WalletContextProvider = ({ children }) => {
       setProvider(provider);
       setLibrary(library);
       if (accounts) setAccount(accounts[0]);
-      setChainId(network.chainId);
+
+      const chId = getAddressNumber(network.chainId);
+      setChainId(chId);
+      setError("");
     } catch (error) {
       setError(error);
     }
@@ -70,12 +73,12 @@ export const WalletContextProvider = ({ children }) => {
 
   const switchNetwork = async (id) => {
     setNetwork(Number(id));
-    // console.log()
     try {
       await library.provider.request({
         method: "wallet_switchEthereumChain",
         params: [{ chainId: toHex(id) }],
       });
+      setError("");
     } catch (switchError) {
       if (switchError.code === 4902) {
         try {
@@ -83,10 +86,12 @@ export const WalletContextProvider = ({ children }) => {
             method: "wallet_addEthereumChain",
             params: [networkParams[toHex(id)]],
           });
+          setError("");
         } catch (error) {
           setError(error);
         }
       }
+      setError(switchError);
     }
   };
 
@@ -104,8 +109,9 @@ export const WalletContextProvider = ({ children }) => {
       };
 
       const handleChainChanged = (_hexChainId) => {
-        setChainId(_hexChainId);
-        connectWallet();
+        const chId = getAddressNumber(_hexChainId);
+        setChainId(chId);
+        // connectWallet();
       };
 
       const handleDisconnect = () => {
@@ -130,7 +136,7 @@ export const WalletContextProvider = ({ children }) => {
   return (
     <WalletContext.Provider
       value={{
-        provider,
+        provider: library,
         account,
         network,
         chainId,
