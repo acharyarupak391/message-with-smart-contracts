@@ -38,7 +38,7 @@ export const MessageForm = () => {
             <p className="flex items-center justify-end gap-1 mt-2 text-xs font-semibold text-gray-500">
               <CalendarIcon className="w-4 h-4" />
               <span>
-                {new Date(parseInt(message?.ts) * 1000).toDateString()}
+                {new Date(parseInt(message?.ts) * 1000).toUTCString()}
               </span>
             </p>
           </div>
