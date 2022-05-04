@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/outline";
 import { truncateAddress } from "../../utils/utils";
 import { TX_SCAN_URL } from "../../utils/contants";
+import { RenderMessage } from "./RenderMessage";
 
 export const ActivityTable = () => {
   const { data, loading, refetch } = useQuery();
@@ -85,11 +86,9 @@ export const ActivityTable = () => {
                   <ExternalLinkIcon className="w-4 h-4" />
                 </a>
               </div>
-              {entity._message && (
-                <p className="italic text-gray-600 font-raleway">
-                  {entity._message}
-                </p>
-              )}
+
+              <RenderMessage msg={entity._message} />
+
               <p
                 className="w-full mt-1 text-xs font-semibold text-right text-gray-500"
                 title={new Date(entity._timestamp * 1000).toString()}

@@ -6,7 +6,7 @@ const ABI = require("../../ABI/Message.json");
 export const useContractMessage = () => {
   const { provider, account, chainId } = useWalletContext();
   const contractAddress = process.env.REACT_APP_CONTRACT_ADDRESS ?? "";
-  const signer = provider.getSigner();
+  const signer = provider?.getSigner();
   const instance = new ethers.Contract(contractAddress, ABI.abi, signer);
 
   const [loading, setLoading] = useState(false);

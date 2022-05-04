@@ -4,6 +4,7 @@ import { AnnotationIcon, CalendarIcon } from "@heroicons/react/outline";
 import { TrashIcon } from "@heroicons/react/solid";
 import { classNames } from "../../utils/methods";
 import { useContractMessage } from "../../utils/hooks/useContractMessage";
+import { CHARACTER_LIMIT } from "../../utils/contants";
 
 export const MessageForm = () => {
   const { loading, message, setMessage, deleteMessage } = useContractMessage();
@@ -26,18 +27,19 @@ export const MessageForm = () => {
     loading ||
     (message?.data
       ? !Boolean(inputValue && inputValue !== message?.data)
-      : !Boolean(inputValue));
+      : !Boolean(inputValue)) ||
+    inputValue.length > CHARACTER_LIMIT;
 
   return (
     <div className="max-w-screen-lg p-2 mx-auto mt-4 bg-gray-200 rounded-md">
-      <div className="flex items-start gap-3 p-2 text-gray-700 bg-white rounded-sm md:w-3/4 lg:w-1/2">
-        <AnnotationIcon className="w-5 h-5" />
+      <div className="flex items-start gap-3 p-2 pr-4 text-gray-700 bg-white rounded-sm lg:w-3/4 2xl:w-1/2">
+        <AnnotationIcon className="flex-shrink-0 w-5 h-5" />
         {message?.data ? (
           <div className="flex-grow">
-            <p className="text-lg">{message?.data}</p>
+            <p className="text-lg break-all font-raleway">{message?.data}</p>
             <p className="flex items-center justify-end gap-1 mt-2 text-xs font-semibold text-gray-500">
               <CalendarIcon className="w-4 h-4" />
-              <span>
+              <span title={new Date(parseInt(message?.ts) * 1000).toString()}>
                 {new Date(parseInt(message?.ts) * 1000).toUTCString()}
               </span>
             </p>
@@ -46,10 +48,11 @@ export const MessageForm = () => {
           <p className="italic text-center text-gray-500">No Message set</p>
         )}
       </div>
-      <div className="flex flex-wrap items-center gap-4 mt-4">
-        <input
-          className="p-2 border-2 border-gray-400 rounded-md outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 md:min-w-[500px] disabled:bg-gray-100 disabled:cursor-not-allowed"
+      <div className="flex flex-wrap items-end gap-4 mt-4">
+        <textarea
+          className="p-2 border-2 border-gray-400 rounded-md outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 min-w-full md:min-w-[550px] disabled:bg-gray-100 disabled:cursor-not-allowed"
           placeholder="Type your message..."
+          rows={8}
           value={inputValue}
           onChange={handleInputChange}
           disabled={loading}
