@@ -33,6 +33,7 @@ export const useQuery = () => {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
+        cache: "no-cache",
         body: JSON.stringify({
           query: getQuery(),
         }),

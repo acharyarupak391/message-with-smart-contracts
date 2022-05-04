@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DEFAULT_CHARACTER_SHOW } from "../../utils/contants";
 
 export const RenderMessage = ({ msg = "" }) => {
@@ -8,6 +8,14 @@ export const RenderMessage = ({ msg = "" }) => {
       ? msg.substring(0, DEFAULT_CHARACTER_SHOW) + "..."
       : msg
   );
+
+  useEffect(() => {
+    setShowMsg(
+      msg.length > DEFAULT_CHARACTER_SHOW
+        ? msg.substring(0, DEFAULT_CHARACTER_SHOW) + "..."
+        : msg
+    );
+  }, [msg]);
 
   const handleClick = () => {
     if (msg.length > DEFAULT_CHARACTER_SHOW) {
