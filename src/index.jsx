@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import "@fontsource/sora";
+import "@fontsource/raleway";
 import "./styles/global.css";
 import { WalletContextProvider } from "./context/wallet";
 

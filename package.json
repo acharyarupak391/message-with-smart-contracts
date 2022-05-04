@@ -5,6 +5,7 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "@fontsource/raleway": "^4.5.8",
     "@fontsource/sora": "^4.5.5",
     "@graphprotocol/graph-cli": "^0.29.1",
     "@heroicons/react": "^1.0.6",

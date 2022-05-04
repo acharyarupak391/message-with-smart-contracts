@@ -1,3 +1,4 @@
+import { ActivityTable } from "./components/ActivityTable";
 import { ConnectWallet } from "./components/ConnectWallet";
 import { MessageForm } from "./components/MessageForm";
 import { useWalletContext } from "./context/wallet";
@@ -9,6 +10,7 @@ export default function Home() {
     <div className="min-h-screen p-2 bg-gray-100">
       <ConnectWallet />
       {account && chainId === SUPPORTED_NETWORK && <MessageForm />}
+      <ActivityTable />
     </div>
   );
 }

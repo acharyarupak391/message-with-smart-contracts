@@ -4,8 +4,13 @@ module.exports = {
     fontFamily: {
       mono: "monospace",
       sans: "Sora, sans-serif",
+      raleway: "Raleway, sans-serif",
     },
-    extend: {},
+    extend: {
+      spacing: {
+        "400px": "400px",
+      },
+    },
   },
   plugins: [],
 };
