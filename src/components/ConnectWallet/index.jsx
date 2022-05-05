@@ -1,6 +1,6 @@
 import { useWalletContext } from "../../context/wallet";
 import { classNames } from "../../utils/methods";
-import { getAddressNumber, truncateAddress } from "../../utils/utils";
+import { truncateAddress } from "../../utils/utils";
 import {
   LinkIcon,
   MinusCircleIcon,
@@ -8,10 +8,26 @@ import {
 } from "@heroicons/react/outline";
 import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/solid";
 import { SUPPORTED_NETWORK } from "../../utils/contants";
+import { useSignMessage } from "../../utils/hooks/useSignMessage";
+import { useEffect } from "react";
+import { VerifiedFilled, VerifiedOutlined } from "../SVG";
 
 export const ConnectWallet = () => {
-  const { account, chainId, connect, disconnect, error, switchNetwork } =
-    useWalletContext();
+  const {
+    account,
+    chainId,
+    connect,
+    disconnect,
+    error,
+    switchNetwork,
+    provider,
+  } = useWalletContext();
+
+  const { signing, sign, verified } = useSignMessage({ provider, account });
+
+  const handleSignClick = () => {
+    sign();
+  };
 
   return (
     <div className="max-w-screen-lg mx-auto">
@@ -27,20 +43,40 @@ export const ConnectWallet = () => {
             account ? "justify-between" : "justify-start"
           )}
         >
-          <div className="flex items-center gap-1">
-            {!account ? (
-              <InformationCircleIcon className="flex-shrink-0 w-6 h-6 text-gray-500" />
-            ) : (
-              <CheckCircleIcon className="flex-shrink-0 w-6 h-6 text-teal-700" />
-            )}
-            <span
-              className={classNames(
-                "italic text-sm",
-                account ? "text-teal-700" : "text-gray-500"
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
+              {!account ? (
+                <InformationCircleIcon className="flex-shrink-0 w-6 h-6 text-gray-500" />
+              ) : (
+                <CheckCircleIcon className="flex-shrink-0 w-6 h-6 text-teal-700" />
               )}
-            >
-              {!account ? "Not Connected" : "Connected "}
-            </span>
+              <span
+                className={classNames(
+                  "italic text-sm",
+                  account ? "text-teal-700" : "text-gray-500"
+                )}
+              >
+                {!account ? "Not Connected" : "Connected "}
+              </span>
+            </div>
+
+            {account && chainId === SUPPORTED_NETWORK && (
+              <button
+                className={classNames(
+                  "flex items-center gap-2 px-3 py-2 rounded-sm text-sm  text-white",
+                  verified ? "bg-green-600" : "bg-gray-500"
+                )}
+                onClick={handleSignClick}
+                disabled={signing || verified}
+              >
+                {verified ? (
+                  <VerifiedFilled className="w-5 h-5" />
+                ) : (
+                  <VerifiedOutlined className="w-5 h-5" />
+                )}
+                {verified ? "Verified" : "Sign Message to Verify"}
+              </button>
+            )}
           </div>
 
           {account && chainId !== SUPPORTED_NETWORK && (
