@@ -36,10 +36,32 @@ export const useContractMessage = () => {
     }
   }
 
-  async function setMessageInContract(msg) {
+  async function checkIfValid(methodName, methodArgs) {
+    try {
+      const gas = await instance.estimateGas[methodName](...methodArgs);
+      console.log({ gas, str: gas.toString() });
+      return true;
+    } catch (err) {
+      if (err?.data === "Reverted") {
+        return false;
+      }
+    }
+  }
+
+  async function setMessageInContract(msg, force = false) {
     setLoading(true);
     try {
-      const tx = await instance.setMessage(msg);
+      let tx;
+      if (force) {
+        const overrides = {
+          gasLimit: "10000000",
+          gasPrice: "50000",
+          value: ethers.utils.parseEther("0"),
+        };
+        tx = await instance.setMessage(msg, overrides);
+      } else {
+        tx = await instance.setMessage(msg);
+      }
       await tx?.wait();
       setLoading(false);
       fetchAndUpdate();
@@ -89,5 +111,6 @@ export const useContractMessage = () => {
     deleteMessage,
     loading,
     refetch: fetchAndUpdate,
+    checkArgs: checkIfValid,
   };
 };

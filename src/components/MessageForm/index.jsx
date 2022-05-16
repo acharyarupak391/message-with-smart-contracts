@@ -1,34 +1,58 @@
 import { useState, useEffect } from "react";
 
-import { AnnotationIcon, CalendarIcon } from "@heroicons/react/outline";
+import {
+  AnnotationIcon,
+  CalendarIcon,
+  ExclamationCircleIcon,
+  InformationCircleIcon,
+} from "@heroicons/react/outline";
 import { TrashIcon } from "@heroicons/react/solid";
 import { classNames } from "../../utils/methods";
 import { useContractMessage } from "../../utils/hooks/useContractMessage";
 import { CHARACTER_LIMIT } from "../../utils/contants";
+import Popup from "../common/Popup";
 
 export const MessageForm = () => {
-  const { loading, message, setMessage, deleteMessage } = useContractMessage();
+  const {
+    loading,
+    message,
+    setMessage,
+    deleteMessage,
+    checkArgs,
+  } = useContractMessage();
   const [inputValue, setInputValue] = useState("");
+  const [showModal, setShowModal] = useState("");
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
   const handleAddOrUpdate = async () => {
-    await setMessage(inputValue);
-    setInputValue("");
+    const isValid = await checkArgs("setMessage", [inputValue]);
+    if (isValid) {
+      await setMessage(inputValue);
+      setInputValue("");
+    } else {
+      setShowModal(true);
+    }
   };
 
   const handleDelete = async () => {
     await deleteMessage();
   };
 
+  const handleForceTxn = async () => {
+    await setMessage(inputValue, true);
+  };
+
   const disabled =
     loading ||
-    (message?.data
-      ? !Boolean(inputValue && inputValue !== message?.data)
-      : !Boolean(inputValue)) ||
+    (message?.data && Boolean(inputValue === message?.data)) ||
     inputValue.length > CHARACTER_LIMIT;
+  // (message?.data
+  //   ? !Boolean(inputValue && inputValue !== message?.data)
+  //   : !Boolean(inputValue)) ||
+  // inputValue.length > CHARACTER_LIMIT;
 
   return (
     <div className="max-w-screen-lg p-2 mx-auto mt-4 bg-gray-200 rounded-md">
@@ -82,6 +106,40 @@ export const MessageForm = () => {
           )}
         </div>
       </div>
+
+      {/* Force Transaction Popup */}
+      <Popup open={showModal} handleClose={() => setShowModal(false)}>
+        <div className="flex items-center p-1 text-red-800 bg-red-100 rounded gap-x-2">
+          <ExclamationCircleIcon className="w-8 h-8 " />
+          <span className="text-xl font-semibold font-raleway">
+            Invalid Transaction !!!
+          </span>
+        </div>
+
+        <div className="p-2 mt-4 text-orange-800 bg-orange-200 rounded">
+          <div className="flex items-center gap-2">
+            <InformationCircleIcon className="w-6 h-6" />
+            <span>
+              You can still force this transaction ignoring this error!!!
+            </span>
+          </div>
+
+          <div className="flex justify-end gap-2 mt-8">
+            <button
+              className="px-3 py-2 font-medium text-white uppercase rounded bg-slate-500"
+              onClick={() => setShowModal(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-3 py-2 font-medium text-white uppercase bg-red-500 rounded"
+              onClick={handleForceTxn}
+            >
+              Send transaction anyway
+            </button>
+          </div>
+        </div>
+      </Popup>
     </div>
   );
 };
