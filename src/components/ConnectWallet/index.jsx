@@ -7,7 +7,10 @@ import {
   InformationCircleIcon as IIcon,
 } from "@heroicons/react/outline";
 import { CheckCircleIcon, InformationCircleIcon } from "@heroicons/react/solid";
-import { SUPPORTED_NETWORK } from "../../utils/contants";
+import {
+  SUPPORTED_NETWORK_ID,
+  SUPPORTED_NETWORK_NAME,
+} from "../../utils/contants";
 import { useSignMessage } from "../../utils/hooks/useSignMessage";
 import { useEffect } from "react";
 import { VerifiedFilled, VerifiedOutlined } from "../SVG";
@@ -60,7 +63,7 @@ export const ConnectWallet = () => {
               </span>
             </div>
 
-            {account && chainId === SUPPORTED_NETWORK && (
+            {account && chainId === SUPPORTED_NETWORK_ID && (
               <button
                 className={classNames(
                   "flex items-center gap-2 px-3 py-2 rounded-sm text-sm  text-white",
@@ -79,7 +82,7 @@ export const ConnectWallet = () => {
             )}
           </div>
 
-          {account && chainId !== SUPPORTED_NETWORK && (
+          {account && chainId !== SUPPORTED_NETWORK_ID && (
             <div className="flex gap-1 p-2 text-xs text-orange-700 bg-orange-600 rounded-md bg-opacity-10">
               <IIcon className="w-4 h-4" />
               <div>
@@ -88,9 +91,13 @@ export const ConnectWallet = () => {
                   Please{" "}
                   <button
                     className="box-border font-semibold text-blue-500 border-b hover:border-b-blue-500"
-                    onClick={() => switchNetwork(SUPPORTED_NETWORK)}
+                    onClick={() => switchNetwork(SUPPORTED_NETWORK_ID)}
                   >
-                    switch to Kovan network
+                    switch to{" "}
+                    <p className="inline capitalize">
+                      {SUPPORTED_NETWORK_NAME}
+                    </p>{" "}
+                    network
                   </button>{" "}
                   to continue!
                 </p>
